@@ -2,7 +2,27 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="description">
+    <p>Our software is a Fake News Detector built using a Multihead Turing Machine (MHTM). It analyzes short Facebook posts and classifies them as CREDIBLE or SUSPICIOUS based on rule-based detection of linguistic patterns found in fake news.</p>
+    <p>
+        The system uses three parallel scanning heads, each checking a different type of pattern:
+
+        <ul>
+            <li>Head 1 – Emotional & Lexical Cues: Detects exaggerated, shocking, and manipulative words. </li>
+
+            <li> Head 2 – Structural Patterns: Looks for excessive punctuation, ALL CAPS words, and unusual text formatting.</li>
+
+            <li>  Head 3 – Repetition: Identifies repeated words or phrases that may indicate deceptive emphasis.</li>
+        </ul>
+
+        After scanning, the system produces:
+
+        A classification (Credible or Suspicious)
+
+        A confidence score based on detected patterns
+
+        A detailed explanation showing which features triggered the detection
+
+        This creates a transparent, deterministic, and easy-to-understand tool that demonstrates how automata theory—specifically Multihead Turing Machines—can be applied to real-world fake news detection without machine learning.
+    </p>
 </div>

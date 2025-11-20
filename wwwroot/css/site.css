@@ -19,4 +19,23 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: black; 
+  color: green;
+}
+
+header{
+    margin: 30px;
+    font-family: Consolas;
+    font-weight: bolder;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-content:start;
+    margin-left: 30px;
+}
+
+.description{
+
 }

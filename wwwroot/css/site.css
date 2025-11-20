@@ -19,23 +19,44 @@ html {
 
 body {
   margin-bottom: 60px;
-  background-color: black; 
-  color: green;
+  background-color: mintcream; 
+  color: black;
 }
 
-header{
+header {
     margin: 30px;
     font-family: Consolas;
     font-weight: bolder;
+    padding: 0;
+    color: green;
+}
+
+
+.header-div {
+    display: flex; 
+    flex-direction:column;
+    justify-content: center; 
+    align-items: center; 
+    gap: 10px;
+}
+
+.glass{
+    width: 40px;
+    height: 40px;
+    margin:0;
+    padding: 0;
 }
 
 .grid-container {
     display: grid;
     grid-template-columns: 1fr;
-    justify-content:start;
-    margin-left: 30px;
+    justify-content: start;
+    margin-left: 60px;
+    margin-right: 60px;
 }
 
-.description{
-
+.text-box-container{
+    background-color: white;
+    border-radius: 10px;
 }
+

@@ -24,7 +24,7 @@ body {
 }
 
 header {
-    margin: 30px;
+    margin: 20px;
     font-family: Consolas;
     font-weight: bolder;
     padding: 0;
@@ -55,8 +55,32 @@ header {
     margin-right: 60px;
 }
 
-.text-box-container{
+.text-box-container {
     background-color: white;
     border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#name{
+    width: 100%;
+    height: 300px;
+    margin-top:20px;
+    padding: 10px;
+    border-radius:10px;
+}
+
+.analyze {
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin:20px;
+    position: center;
 }
 

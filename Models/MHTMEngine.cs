@@ -21,9 +21,9 @@ public class MHTMEngine
 
         // Weighted scoring
         double finalScore =
-            (score1 * 0.40) +
-            (score2 * 0.30) +
-            (score3 * 0.30);
+            (score1 * 0.40)+
+        (score2 * 0.30) +
+        (score3 * 0.30);
 
         result.ConfidenceScore = finalScore;
 

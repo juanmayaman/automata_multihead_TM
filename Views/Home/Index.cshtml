@@ -1,149 +1,142 @@
-﻿    @{
-        ViewData["Title"] = "Home Page";
-    }
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
 
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-title">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #3b82f6;">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-                <h1>Fake News Detector</h1>
-            </div>
-            <p class="header-subtitle">Powered by Multihead Turing Machine Analysis</p>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #3b82f6;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <h1>Fake News Detector</h1>
         </div>
-
-        <!-- Description Card -->
-        <div class="description card">
-            <p>
-                Our software is a Fake News Detector built using a Multihead Turing Machine (MHTM).
-                It analyzes short Facebook posts and classifies them as
-                <strong>CREDIBLE</strong> or <strong>SUSPICIOUS</strong>
-                based on rule-based detection of linguistic patterns found in fake news.
-            </p>
-
-            <p>The system uses three parallel scanning heads:</p>
-
-            <ul>
-                <li><strong>Head 1 – Emotional & Lexical Cues:</strong> Detects exaggerated, shocking, and manipulative words.</li>
-                <li><strong>Head 2 – Structural Patterns:</strong> Looks for excessive punctuation, ALL CAPS words, and unusual formatting.</li>
-                <li><strong>Head 3 – Repetition:</strong> Identifies repeated words or phrases indicating deceptive emphasis.</li>
-            </ul>
-
-            <p>After scanning, the system produces:</p>
-
-            <ul>
-                <li>A classification (Credible or Suspicious)</li>
-                <li>A confidence score based on detected patterns</li>
-                <li>A detailed explanation of triggered features</li>
-            </ul>
-
-            <p>
-                This creates a transparent, deterministic, and easy-to-understand tool that
-                demonstrates how automata theory—specifically Multihead Turing Machines—can be
-                applied to fake news detection without machine learning.
-            </p>
-
-            <!-- Input Form -->
-            <form class="analysis-form" id="analysisForm">
-                <label for="inputText">Enter Facebook Post / Text</label>
-                <textarea name="inputText" id="inputText" placeholder="Paste the text you want to analyze...">BREAKING NEWS!!! Scientists SHOCKED by this MIRACLE discovery!!! The government doesn't want you to know about this SHOCKING truth! They tried to hide this from us! URGENT ALERT - share this now before it gets deleted!!! This is absolutely UNBELIEVABLE and will change everything you thought you knew!!!</textarea>
-
-                <div class="button-group">
-                    <button type="submit" class="btn-primary" id="analyzeBtn">
-                        <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <path d="m21 21-4.35-4.35"></path>
-                        </svg>
-                        Analyze Post
-                    </button>
-                    <button type="button" class="btn-secondary hidden" id="resetBtn">Reset</button>
-                </div>
-            </form>
-
-            <!-- Results Section -->
-            <!--
-                
-            <div id="resultsSection">
-                <div class="result-card suspicious">
-                    <div class="result-header">
-                        <div class="result-title">
-                            <svg class="icon suspicious" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="8" x2="12" y2="12"></line>
-                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                            </svg>
-                            <div>
-                                <h2 id="classificationText">SUSPICIOUS</h2>
-                                <p class="result-subtitle">Classification Result</p>
-                            </div>
-                        </div>
-
-                        <div class="confidence-score">
-                            <div class="confidence-number" id="confidenceNumber">87%</div>
-                            <p class="confidence-label">Confidence</p>
-                        </div>
-                    </div>
-
-                    <div class="progress-bar">
-                        <div class="progress-fill suspicious" id="progressFill" style="width:87%"></div>
-                    </div>
-                </div>
-
-                 Detection Details 
-                <div class="detection-card">
-                    <div class="detection-header">
-                        <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                        </svg>
-                        <h3>Detection Analysis (<span id="totalFlags">14</span> flags detected)</h3>
-                    </div>
-
-                    <div class="detection-section head1">
-                        <h4>Head 1: Emotional & Lexical Cues</h4>
-                        <div class="tags" id="head1Tags">
-                            <span class="tag head1">BREAKING</span>
-                            <span class="tag head1">SHOCKED</span>
-                            <span class="tag head1">MIRACLE</span>
-                            <span class="tag head1">SHOCKING</span>
-                            <span class="tag head1">URGENT</span>
-                            <span class="tag head1">ALERT</span>
-                            <span class="tag head1">UNBELIEVABLE</span>
-                        </div>
-                    </div>
-
-                    <div class="detection-section head2">
-                        <h4>Head 2: Structural Patterns</h4>
-                        <div class="tags" id="head2Tags">
-                            <span class="tag head2">Excessive punctuation (6x)</span>
-                            <span class="tag head2">ALL CAPS words (5x)</span>
-                        </div>
-                    </div>
-
-                    <div class="detection-section head3">
-                        <h4>Head 3: Repetition Detection</h4>
-                        <div class="tags" id="head3Tags">
-                            <span class="tag head3">"this" repeated 5 times</span>
-                            <span class="tag head3">"shocking" repeated 3 times</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-             Info Box 
-            <div class="info-box">
-                <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
-                    <line x1="12" y1="9" x2="12" y2="13"></line>
-                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                </svg>
-                <div class="info-box-content">
-                    <strong>How it works:</strong>
-                    Three parallel scanning heads analyze linguistic patterns commonly found in fake news,
-                    producing a transparent rule-based classification.
-                </div>
-            </div>-->
-        </div>
+        <p class="header-subtitle">Powered by Multihead Turing Machine Analysis</p>
     </div>
+
+    <!-- Description Card -->
+    <div class="description card">
+        <p>
+            Our software is a Fake News Detector built using a Multihead Turing Machine (MHTM).
+            It analyzes short Facebook posts and classifies them as
+            <strong>CREDIBLE</strong> or <strong>SUSPICIOUS</strong>
+            based on rule-based detection of linguistic patterns found in fake news.
+        </p>
+
+        <p>The system uses three parallel scanning heads:</p>
+
+        <ul>
+            <li><strong>Head 1 – Emotional & Lexical Cues:</strong> Detects exaggerated, shocking, and manipulative words.</li>
+            <li><strong>Head 2 – Structural Patterns:</strong> Looks for excessive punctuation, ALL CAPS words, and unusual formatting.</li>
+            <li><strong>Head 3 – Repetition:</strong> Identifies repeated words or phrases indicating deceptive emphasis.</li>
+        </ul>
+
+        <p>After scanning, the system produces:</p>
+
+        <ul>
+            <li>A classification (Credible or Suspicious)</li>
+            <li>A confidence score based on detected patterns</li>
+            <li>A detailed explanation of triggered features</li>
+        </ul>
+
+        <!-- Input Form -->
+        <form asp-controller="Analyzer" asp-action="Analyze" method="post">
+            <label for="inputText">Enter Facebook Post / Text</label>
+            <textarea name="inputText" id="inputText" placeholder="Paste the text you want to analyze...">BREAKING NEWS!!! Scientists SHOCKED by this MIRACLE discovery!!! The government doesn't want you to know about this SHOCKING truth! They tried to hide this from us! URGENT ALERT - share this now before it gets deleted!!! This is absolutely UNBELIEVABLE and will change everything you thought you knew!!!</textarea>
+
+            <div class="button-group">
+                <button type="submit" class="btn-primary" id="analyzeBtn">
+                    <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    Analyze Post
+                </button>
+                <button type="button" class="btn-secondary hidden" id="resetBtn">Reset</button>
+            </div>
+        </form>
+
+        <!-- Results Section (Hidden by default) 
+        <div id="resultsSection" class="hidden">
+            <div class="result-card suspicious">
+                <div class="result-header">
+                    <div class="result-title">
+                        <svg class="icon suspicious" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div>
+                            <h2 id="classificationText">SUSPICIOUS</h2>
+                            <p class="result-subtitle">Classification Result</p>
+                        </div>
+                    </div>
+
+                    <div class="confidence-score">
+                        <div class="confidence-number" id="confidenceNumber">87%</div>
+                        <p class="confidence-label">Confidence</p>
+                    </div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill suspicious" id="progressFill" style="width:87%"></div>
+                </div>
+            </div>
+
+             Detection Details 
+            <div class="detection-card">
+                <div class="detection-header">
+                    <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                    <h3>Detection Analysis (<span id="totalFlags">14</span> flags detected)</h3>
+                </div>
+
+                <div class="detection-section head1">
+                    <h4>Head 1: Emotional & Lexical Cues</h4>
+                    <div class="tags" id="head1Tags">
+                        <span class="tag head1">BREAKING</span>
+                        <span class="tag head1">SHOCKED</span>
+                        <span class="tag head1">MIRACLE</span>
+                        <span class="tag head1">SHOCKING</span>
+                        <span class="tag head1">URGENT</span>
+                        <span class="tag head1">ALERT</span>
+                        <span class="tag head1">UNBELIEVABLE</span>
+                    </div>
+                </div>
+
+                <div class="detection-section head2">
+                    <h4>Head 2: Structural Patterns</h4>
+                    <div class="tags" id="head2Tags">
+                        <span class="tag head2">Excessive punctuation (6x)</span>
+                        <span class="tag head2">ALL CAPS words (5x)</span>
+                    </div>
+                </div>
+
+                <div class="detection-section head3">
+                    <h4>Head 3: Repetition Detection</h4>
+                    <div class="tags" id="head3Tags">
+                        <span class="tag head3">"this" repeated 5 times</span>
+                        <span class="tag head3">"shocking" repeated 3 times</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        Info Box
+        <div class="info-box">
+            <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <div class="info-box-content">
+                <strong>How it works:</strong>
+                Three parallel scanning heads analyze linguistic patterns commonly found in fake news,
+                producing a transparent rule-based classification.
+            </div>
+        </div>
+    </div>-->
+</div>
+

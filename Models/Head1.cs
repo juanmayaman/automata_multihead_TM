@@ -36,15 +36,10 @@
             if (flagCount < 2)
                 state = HeadStates.HeadState.q_reject;
 
-            double weight = state == HeadStates.HeadState.q2_accept
-                ? 0.40
-                : state == HeadStates.HeadState.q1
-                    ? 0.20
-                    : 0.05;
 
-            double score = weight * triggers.Count;
+            double normalizedScore = Math.Min((double)flagCount / 2.0, 1.0);
 
-            return (score, triggers);
+            return (normalizedScore, triggers);
         }
     }
 }

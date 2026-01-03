@@ -38,7 +38,6 @@ namespace TM_MULTIHEAD_PHISHING_DETECTOR.Models
 
             // Outputs
             var triggers = new List<string>();
-            double score = 0.0;
 
             // Counters
             int punctuationCount = 0;        // Pattern 3
@@ -141,10 +140,10 @@ namespace TM_MULTIHEAD_PHISHING_DETECTOR.Models
             else if (flagCount >= 2)
                 FinalState = HeadStates.HeadState.q2_accept;  // suspicious
 
-            // Scoring
-            score = 0.30 * flagCount;
 
-            return (score, triggers);
+            double normalizedScore = Math.Min((double)flagCount / 2.0, 1.0);
+
+            return (normalizedScore, triggers);
         }
     }
 }

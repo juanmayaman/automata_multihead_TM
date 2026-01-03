@@ -15,23 +15,22 @@ namespace TM_MULTIHEAD_PHISHING_DETECTOR.Controllers
         }
 
         [HttpPost]
-        public IActionResult Analyze(string inputText )
+        public IActionResult Analyze(string inputText)
         {
-            if (string.IsNullOrWhiteSpace(inputText ))
+            if (string.IsNullOrWhiteSpace(inputText))
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             if (inputText.Length > 280)
-            {   
-                return RedirectToAction("Index");
+            {
+                return RedirectToAction("Index", "Home");
             }
 
-
             var engine = new MHTMEngine();
-            var result = engine.Process(inputText );
+            var result = engine.Process(inputText);
 
-            return View("~/Views/Home/Result.cshtml", result); // passes AnalysisResult to Result.cshtml
+            return View("~/Views/Home/Result.cshtml", result);
         }
     }
 }

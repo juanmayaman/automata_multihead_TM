@@ -3,6 +3,7 @@
     public class AnalysisResult
     {
         public string OriginalText { get; set; }
+        public string ProcessedText { get; set; }
         public string Classification { get; set; } // Credible / Suspicious
         public double ConfidenceScore { get; set; }
 

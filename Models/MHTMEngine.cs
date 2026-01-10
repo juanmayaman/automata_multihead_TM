@@ -3,45 +3,41 @@ using TM_MULTIHEAD_PHISHING_DETECTOR.Models;
 
 public class MHTMEngine
 {
-    public AnalysisResult Process(string text)
+    public async Task<AnalysisResult> ProcessAsync(string text)
     {
         var result = new AnalysisResult();
 
-        // Store original user input
         result.OriginalText = text;
 
-        // 🔹 Preprocess text before analysis
         string cleanText = PreprocessText(text);
         result.ProcessedText = cleanText;
 
-        // Run all heads using preprocessed text
-        var (score1, t1) = new Head1().Run(cleanText);
-        var (score2, t2) = new Head2().Run(cleanText);
-        var (score3, t3) = new Head3().Run(cleanText);
+        // Run heads in parallel
+        var head1Task = Task.Run(() => new Head1().Run(cleanText));
+        var head2Task = Task.Run(() => new Head2().Run(cleanText));
+        var head3Task = Task.Run(() => new Head3().Run(cleanText));
 
-        // Store individual normalized scores
+        await Task.WhenAll(head1Task, head2Task, head3Task);
+
+        var (score1, t1) = head1Task.Result;
+        var (score2, t2) = head2Task.Result;
+        var (score3, t3) = head3Task.Result;
+
         result.Head1Score = score1;
         result.Head2Score = score2;
         result.Head3Score = score3;
 
-        // Store trigger details
         result.Head1Triggers = t1;
         result.Head2Triggers = t2;
         result.Head3Triggers = t3;
 
-        // Apply paper-defined weights
-        double head1Contribution = score1 * 0.40;
-        double head2Contribution = score2 * 0.30;
-        double head3Contribution = score3 * 0.30;
-
-        // Final normalized score (0.0–1.0)
         double finalNormalizedScore =
-            head1Contribution + head2Contribution + head3Contribution;
+            (score1 * 0.40) +
+            (score2 * 0.30) +
+            (score3 * 0.30);
 
-        // Convert to percentage (0–100)
         result.ConfidenceScore = finalNormalizedScore * 100;
 
-        // Classification threshold 
         // 0 - 49 = CREDIBLE
         // 50 - 100 = SUSPICIOUS
         result.Classification = result.ConfidenceScore >= 50

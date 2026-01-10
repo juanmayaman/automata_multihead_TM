@@ -1,10 +1,7 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TM_MULTIHEAD_PHISHING_DETECTOR.Models;
 
 namespace TM_MULTIHEAD_PHISHING_DETECTOR.Controllers
-
 {
     public class AnalyzerController : Controller
     {
@@ -14,8 +11,9 @@ namespace TM_MULTIHEAD_PHISHING_DETECTOR.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        // 🔹 CHANGED: IActionResult → async Task<IActionResult>
         [HttpPost]
-        public IActionResult Analyze(string inputText)
+        public async Task<IActionResult> Analyze(string inputText)
         {
             if (string.IsNullOrWhiteSpace(inputText))
             {
@@ -28,7 +26,9 @@ namespace TM_MULTIHEAD_PHISHING_DETECTOR.Controllers
             }
 
             var engine = new MHTMEngine();
-            var result = engine.Process(inputText);
+
+            // 🔹 CHANGED: Process → await ProcessAsync
+            var result = await engine.ProcessAsync(inputText);
 
             return View("~/Views/Home/Result.cshtml", result);
         }

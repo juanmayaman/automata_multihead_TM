@@ -9,33 +9,76 @@
             "amazing", "incredible", "insane", "crazy"
         };
 
+        // Automata states for word building
+        private enum WordBuildState
+        {
+            ReadingWord,      // Currently reading letters
+            AtBoundary        // At word boundary (space, punctuation, etc)
+        }
+
         public (double score, List<string> triggers) Run(string text)
         {
-            // DFA-like simulation
             var triggers = new List<string>();
             int flagCount = 0;
-            var state = HeadStates.HeadState.q0;
+            var finalState = HeadStates.HeadState.q0;
 
-            var words = text.ToLower().Split(new char[] { ' ', '.', ',', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+            // Word building state
+            var wordState = WordBuildState.AtBoundary;
+            string currentWord = "";
 
-            foreach (var word in words)
+            // AUTOMATA:
+            for (int i = 0; i < text.Length; i++)
             {
-                if (SuspiciousWords.Contains(word))
-                {
-                    triggers.Add(word);
-                    flagCount++;
+                char c = text[i];
 
-                    if (flagCount == 1)
-                        state = HeadStates.HeadState.q1;
-                    else if (flagCount >= 2)
-                        state = HeadStates.HeadState.q2_accept;
+
+                if (char.IsLetter(c))
+                {
+                    // Transition to ReadingWord state
+                    wordState = WordBuildState.ReadingWord;
+                    currentWord += char.ToLower(c);
+                }
+                else
+                {
+                    // Transition to AtBoundary state
+                    if (wordState == WordBuildState.ReadingWord)
+                    {
+                        // Complete word - check if suspicious
+                        if (currentWord.Length > 0 && SuspiciousWords.Contains(currentWord))
+                        {
+                            triggers.Add(currentWord);
+                            flagCount++;
+
+                            // STATE TRANSITION based on flag count
+                            if (flagCount == 1)
+                                finalState = HeadStates.HeadState.q1;
+                            else if (flagCount >= 2)
+                                finalState = HeadStates.HeadState.q2_accept;
+                        }
+                        currentWord = "";
+                    }
+                    wordState = WordBuildState.AtBoundary;
                 }
             }
 
-            // Final state check
-            if (flagCount < 2)
-                state = HeadStates.HeadState.q_reject;
+            // Process last word if exists
+            if (wordState == WordBuildState.ReadingWord && currentWord.Length > 0)
+            {
+                if (SuspiciousWords.Contains(currentWord))
+                {
+                    triggers.Add(currentWord);
+                    flagCount++;
 
+                    if (flagCount == 1)
+                        finalState = HeadStates.HeadState.q1;
+                    else if (flagCount >= 2)
+                        finalState = HeadStates.HeadState.q2_accept;
+                }
+            }
+
+            // Final state determination
+            if (flagCount < 2 && finalState != HeadStates.HeadState.q2_accept)
+                finalState = HeadStates.HeadState.q_reject;
 
             double normalizedScore = Math.Min((double)flagCount / 2.0, 1.0);
 

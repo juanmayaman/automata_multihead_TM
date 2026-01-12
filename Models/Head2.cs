@@ -1,90 +1,139 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace TM_MULTIHEAD_PHISHING_DETECTOR.Models
 {
     public class Head2 // Structural patterns (excessive punctuation, unusual capitalization)
     {
-        public enum Pattern1HeadState
+        // Automata states
+        public enum PunctState
         {
             q0,          // Start / no punctuation
             q_Punct      // Inside punctuation streak
         }
 
+        public enum WordState
+        {
+            ReadingWord,
+            AtBoundary
+        }
+
         private HashSet<string> ExcludedAcronyms = new()
         {
-            // Countries & international orgs
             "USA", "UK", "UN", "EU", "ASEAN", "NATO", "WHO", "IMF", "WTO", "UNICEF",
-
-            // Government & law enforcement
             "FBI", "CIA", "DOJ", "PNP", "AFP", "NBI", "DILG", "CHED", "DEPED", "DOH",
-
-            // Health & science
             "COVID", "COVID-19", "SARS", "HIV", "AIDS", "CDC", "FDA",
-
-            // Media & institutions
             "CNN", "BBC", "GMA", "ABS", "NASA", "HBO",
-
-            // Military / disaster response (PH context)
             "DND", "PAF", "PCG", "NDRRMC"
         };
 
         public (double score, List<string> triggers) Run(string text)
         {
-            // DFA state
-            var state = Pattern1HeadState.q0;
-            var FinalState = HeadStates.HeadState.q0;
-
-            // Outputs
             var triggers = new List<string>();
-
-            // Counters
-            int punctuationCount = 0;        // Pattern 3
-            int punctuationStreak = 0;       // Pattern 1
-            int countCaps = 0;               // Pattern 2
             int flagCount = 0;
+            var finalState = HeadStates.HeadState.q0;
 
-            // Pattern flags
-            bool pattern1Detected = false;   // Excessive consecutive punctuation
-            bool pattern2Detected = false;   // Multiple ALL CAPS words
-            bool pattern3Detected = false;   // High total punctuation
+            // Pattern 1 & 3: Punctuation tracking
+            var punctState = PunctState.q0;
+            int punctuationCount = 0;
+            int punctuationStreak = 0;
+            bool pattern1Detected = false;
+            bool pattern3Detected = false;
 
-            // Pattern 1 & Pattern 3 (DFA)
+            // Pattern 2: ALL CAPS tracking
+            var wordState = WordState.AtBoundary;
+            string currentWord = "";
+            int countCaps = 0;
+            bool pattern2Detected = false;
+
+            // AUTOMATA: 
             for (int i = 0; i < text.Length; i++)
             {
-                char currentChar = text[i];
+                char c = text[i];
 
-                switch (state)
+                // === PATTERN 1 & 3: Punctuation DFA (STATE TRANSITION per char) ===
+                if (char.IsPunctuation(c))
                 {
-                    case Pattern1HeadState.q0:
-                        if (char.IsPunctuation(currentChar))
-                        {
-                            punctuationCount++;
-                            punctuationStreak = 1;
-                            state = Pattern1HeadState.q_Punct;
-                        }
-                        break;
+                    // Transition to punctuation state
+                    if (punctState == PunctState.q0)
+                    {
+                        punctState = PunctState.q_Punct;
+                        punctuationStreak = 1;
+                    }
+                    else // already in q_Punct
+                    {
+                        punctuationStreak++;
+                    }
+                    punctuationCount++;
 
-                    case Pattern1HeadState.q_Punct:
-                        if (char.IsPunctuation(currentChar))
-                        {
-                            punctuationCount++;
-                            punctuationStreak++;
-                        }
-                        else
-                        {
-                            punctuationStreak = 0;
-                            state = Pattern1HeadState.q0;
-                        }
-                        break;
+                    // Check for consecutive punctuation pattern
+                    if (punctuationStreak >= 3 && !pattern1Detected)
+                    {
+                        pattern1Detected = true;
+                    }
+                }
+                else
+                {
+                    // Transition out of punctuation state
+                    if (punctState == PunctState.q_Punct)
+                    {
+                        punctState = PunctState.q0;
+                        punctuationStreak = 0;
+                    }
                 }
 
-                // Detect 1 run of 3+ consecutive punctuation
-                if (punctuationStreak >= 3 && !pattern1Detected)
+                // === PATTERN 2: ALL CAPS DFA  ===
+                if (char.IsLetter(c))
                 {
-                    pattern1Detected = true;
-                    punctuationStreak = 0; // consume the run
+                    // Transition to reading word
+                    wordState = WordState.ReadingWord;
+                    currentWord += c;
+                }
+                else
+                {
+                    // Transition to boundary - check complete word
+                    if (wordState == WordState.ReadingWord && currentWord.Length >= 3)
+                    {
+                        bool isAllCaps = true;
+                        for (int j = 0; j < currentWord.Length; j++)
+                        {
+                            if (!char.IsUpper(currentWord[j]))
+                            {
+                                isAllCaps = false;
+                                break;
+                            }
+                        }
+
+                        if (isAllCaps && !ExcludedAcronyms.Contains(currentWord))
+                        {
+                            countCaps++;
+                            if (countCaps >= 2)
+                                pattern2Detected = true;
+                        }
+                    }
+                    currentWord = "";
+                    wordState = WordState.AtBoundary;
+                }
+            }
+
+            // Check last word
+            if (wordState == WordState.ReadingWord && currentWord.Length >= 3)
+            {
+                bool isAllCaps = true;
+                for (int j = 0; j < currentWord.Length; j++)
+                {
+                    if (!char.IsUpper(currentWord[j]))
+                    {
+                        isAllCaps = false;
+                        break;
+                    }
+                }
+
+                if (isAllCaps && !ExcludedAcronyms.Contains(currentWord))
+                {
+                    countCaps++;
+                    if (countCaps >= 2)
+                        pattern2Detected = true;
                 }
             }
 
@@ -92,29 +141,7 @@ namespace TM_MULTIHEAD_PHISHING_DETECTOR.Models
             if (punctuationCount >= 5)
                 pattern3Detected = true;
 
-            // Pattern 2 (ALL CAPS words)
-            var words = text.Split(
-                new char[] { ' ', '.', ',', '!', '?', ';', ':', '"', '(', ')', '-' },
-                StringSplitOptions.RemoveEmptyEntries
-            );
-
-            foreach (var word in words)
-            {
-                bool isAllCaps = word.All(c => char.IsUpper(c));
-
-                if (word.Length > 3 && isAllCaps && !ExcludedAcronyms.Contains(word))
-                {
-                    countCaps++;
-                }
-
-                if (countCaps >= 2)
-                {
-                    pattern2Detected = true;
-                    break;
-                }
-            }
-
-            // Flag counting + triggers
+            // Count flags and add triggers
             if (pattern1Detected)
             {
                 flagCount++;
@@ -133,13 +160,13 @@ namespace TM_MULTIHEAD_PHISHING_DETECTOR.Models
                 triggers.Add("High overall punctuation usage");
             }
 
+            // FINAL STATE TRANSITION based on flag count
             if (flagCount == 0)
-                FinalState = HeadStates.HeadState.q_reject;    // credible
+                finalState = HeadStates.HeadState.q_reject;
             else if (flagCount == 1)
-                FinalState = HeadStates.HeadState.q1;         // intermediate
+                finalState = HeadStates.HeadState.q1;
             else if (flagCount >= 2)
-                FinalState = HeadStates.HeadState.q2_accept;  // suspicious
-
+                finalState = HeadStates.HeadState.q2_accept;
 
             double normalizedScore = Math.Min((double)flagCount / 2.0, 1.0);
 

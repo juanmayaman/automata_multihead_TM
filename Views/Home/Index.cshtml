@@ -43,7 +43,7 @@
         <!-- Input Form -->
         <form asp-controller="Analyzer" asp-action="Analyze" method="post">
             <label for="inputText">Enter Facebook Post / Text (Max 280 characters)</label>
-            <textarea name="inputText" id="inputText" maxlength="280" placeholder="Paste the text you want to analyze..."></textarea>
+            <textarea name="inputText" id="inputText" maxlength="280" placeholder="Paste the text you want to analyze..." required></textarea>
 
             <!-- Character Counter -->
             <div style="text-align: right; margin-top: 5px; font-size: 0.9em; color: #666;">

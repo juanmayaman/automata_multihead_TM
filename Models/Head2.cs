@@ -116,26 +116,26 @@ namespace TM_MULTIHEAD_PHISHING_DETECTOR.Models
                 }
             }
 
-            // Check last word
-            if (wordState == WordState.ReadingWord && currentWord.Length >= 3)
-            {
-                bool isAllCaps = true;
-                for (int j = 0; j < currentWord.Length; j++)
-                {
-                    if (!char.IsUpper(currentWord[j]))
-                    {
-                        isAllCaps = false;
-                        break;
-                    }
-                }
+                      // Check last word
+          if (wordState == WordState.ReadingWord && currentWord.Length >= 3)
+          {
+              bool isAllCaps = true;
+              for (int j = 0; j < currentWord.Length; j++)
+              {
+                  if (!char.IsUpper(currentWord[j]))
+                  {
+                      isAllCaps = false;
+                      break;
+                  }
+              }
 
-                if (isAllCaps && !ExcludedAcronyms.Contains(currentWord))
-                {
-                    countCaps++;
-                    if (countCaps >= 2)
-                        pattern2Detected = true;
-                }
-            }
+              if (isAllCaps && !ExcludedAcronyms.Contains(currentWord))
+              {
+                  countCaps++;
+                  if (countCaps >= 2)
+                      pattern2Detected = true;
+              }
+          }
 
             // Pattern 3: total punctuation threshold
             if (punctuationCount >= 5)

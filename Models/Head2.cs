@@ -102,7 +102,7 @@ namespace TM_MULTIHEAD_PHISHING_DETECTOR.Models
             {
                 bool isAllCaps = word.All(c => char.IsUpper(c));
 
-                if (word.Length > 3 && isAllCaps && !ExcludedAcronyms.Contains(word))
+                if (word.Length >= 3 && isAllCaps && !ExcludedAcronyms.Contains(word))
                 {
                     countCaps++;
                 }
